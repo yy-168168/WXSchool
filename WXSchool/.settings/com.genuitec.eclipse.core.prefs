@@ -1,0 +1,4 @@
+#Sat Nov 07 20:01:21 CST 2015
+eclipse.preferences.version=1
+validator.Checked=WebRoot/static_/jquery.mobile.custom.min.js,WebRoot/kindeditor,WebRoot/static_/wx_tool.js
+validator.Unchecked=WebRoot/kindeditor/plugins/code/prettify.js

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="WXSchool"
+  id="myeclipse.1374285737805"
+  context-root="/w"
+  j2ee-spec="5.0"
+  archive="WXSchool.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>我的电子票</title>
+
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport"
+			content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+		<style type="text/css">
+tr {
+	text-align: center;
+}
+</style>
+		<script type="text/javascript">
+var curDate = new Date();
+window.onload = function() {
+	changeColor(3000);
+	setInterval('changeColor(3000)', 3000);
+};
+function changeColor(tt) {
+	var t = tt/6;
+	setTimeout('setColor("#FF0000")', 0);
+	setTimeout('setColor("#FFC125")', t);
+	setTimeout('setColor("#00EE00")', 2*t);
+	setTimeout('setColor("#1E90FF")', 3*t);
+	setTimeout('setColor("#8A2BE2")', 4*t);
+	setTimeout('setColor("#333333")', 5*t);
+}
+
+function setColor(c) {
+	document.getElementById("plateNO").style.color = c;
+}
+</script>
+	</head>
+
+	<body style="margin: 0">
+		<table cellpadding="0" cellspacing="0" border="0" width="100%"
+			height="100%">
+			<tr height="25%" style="background-color: #727272">
+				<td>
+					<div id="plateNO" style="font-size: 6em; font-weight: bold; margin-bottom: -1px">
+						粤BK8467
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td
+					style="background-image: url('images/dadaimg2.png'); background-repeat: repeat-x; height: 25px;">
+				</td>
+			</tr>
+			<tr style="background-color: #00BC10">
+				<td>
+					<div id="curDate" style="font-size: 5em; font-weight: bold; color: #111;">
+						<script type="text/javascript">
+document.getElementById("curDate").innerHTML = (curDate.getMonth() + 1) + "月"
+		+ curDate.getDate() + "日";</script>
+					</div>
+					<div style="font-size: 8.5em; font-weight: bold;">
+						07:40
+					</div>
+				</td>
+			</tr>
+			<tr height="30%" style="background-color: #00BC10">
+				<td>
+					<div
+						style="color: #444; font-size: 3em; line-height: 1.6; font-weight: bold; padding: 20px 0; margin: 0 20px 30px 20px; border-top: 1px dashed #222; border-bottom: 1px dashed #222;">
+						<div>
+							平山路口(公交站)
+						</div>
+						<div style="font-size: 0.6em">
+							至
+						</div>
+						<div>
+							科苑北环立交①(公交站)
+						</div>
+					</div>
+				</td>
+			</tr>
+			<!-- 
+			<tr>
+				<td
+					style="background-image: url('images/dadaimg1.png'); background-repeat: repeat-x; height: 25px;"></td>
+			</tr>
+			 -->
+		</table>
+	</body>
+</html>

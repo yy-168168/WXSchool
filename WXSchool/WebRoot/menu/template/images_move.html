@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<meta name="description" content="js图片滚动切换插" />
+		<script type="text/javascript" src="../js/jquery-1.8.2.min.js">
+</script>
+		<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+a,img {
+	border: 0;
+}
+
+body {
+	font: 12px/ 180% "宋体", Arial, Helvetica, sans-serif;
+}
+
+/*图片轮换*/
+#slideBox {
+	height: 180px;
+	overflow: hidden;
+	position: relative;
+	margin: 0px auto;
+}
+
+#slideBox ul#show_pic {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	height: 180px;
+	position: absolute;
+}
+
+#slideBox ul#show_pic li {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+#slideBox ul#show_pic li img {
+	display: block;
+}
+
+#iconBall {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+#iconBall li {
+	float: left;
+	color: #ddd;
+	width: 30px;
+	height: 25px;
+	line-height: 25px;
+	cursor: pointer;
+	text-align: center;
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 4px;
+}
+
+#iconBall li.active {
+	background: url(../images/ad/iconbg.png) no-repeat;
+	color: #fff;
+}
+
+#slideText {
+	width: 10000px;
+	height: 25px;
+	color: #fff;
+	position: absolute;
+	left: 0px;
+	bottom: 0px; *
+	background: transparent;
+	background-color: #000;
+	filter: alpha(opacity =         40);
+	opacity: 0.4;
+}
+
+#textBall {
+	position: absolute;
+	left: 10px;
+	bottom: 3px;
+}
+
+#textBall li {
+	float: left;
+	cursor: pointer;
+	display: none;
+	color: #fff;
+	font-size: 14px;
+}
+
+#textBall li.active {
+	display: block;
+}
+
+#textBall li a {
+	text-decoration: none;
+	color: #fff;
+}
+</style>
+	</head>
+
+	<body>
+		<div id="slideBox">
+			<ul id="show_pic" style="left: 0px">
+				<li>
+					<img height="180" src="../images/ad/1.jpg" />
+				</li>
+				<li>
+					<img height="180" src="../images/ad/2.jpg" />
+				</li>
+				<li>
+					<img height="180" src="../images/ad/3.jpg" />
+				</li>
+				<li>
+					<img height="180" src="../images/ad/4.jpg" />
+				</li>
+			</ul>
+			<div id="slideText"></div>
+			<ul id="iconBall">
+				<li class="active">
+					1
+				</li>
+				<li>
+					2
+				</li>
+				<li>
+					3
+				</li>
+				<li>
+					4
+				</li>
+			</ul>
+			<ul id="textBall">
+				<li class="active">
+					aaaaaaaaaa
+				</li>
+				<li>
+					bbbbbbbbbbb
+				</li>
+				<li>
+					cccccccccc
+				</li>
+				<li>
+					ddddddddddd
+				</li>
+			</ul>
+		</div>
+		<!--slideBox end-->
+
+		<script type="text/javascript">
+var sw = document.body.clientWidth;//网页可见区域宽：
+$(function() {
+	$("#slideBox").attr("width", sw);
+	$("#show_pic").attr("width", sw * 10);
+	$("#show_pic li img").attr("width", sw);
+});
+
+var glide = new function() {
+	function $id(id) {
+		return document.getElementById(id);
+	}
+	;
+	this.layerGlide = function(auto, oEventCont, oTxtCont, oSlider,
+			sSingleSize, second, fSpeed, point) {
+		var oSubLi = $id(oEventCont).getElementsByTagName('li');
+		var oTxtLi = $id(oTxtCont).getElementsByTagName('li');
+		var interval, timeout, oslideRange;
+		var time = 1;
+		var speed = fSpeed
+		var sum = oSubLi.length;
+		var a = 0;
+		var delay = second * 1000;
+		var setValLeft = function(s) {
+			return function() {
+				oslideRange = Math.abs(parseInt($id(oSlider).style[point]));
+				$id(oSlider).style[point] = -Math.floor(oslideRange
+						+ (parseInt(s * sSingleSize) - oslideRange) * speed) + 'px';
+				if (oslideRange == [ (sSingleSize * s) ]) {
+					clearInterval(interval);
+					a = s;
+				}
+			}
+		};
+		var setValRight = function(s) {
+			return function() {
+				oslideRange = Math.abs(parseInt($id(oSlider).style[point]));
+				$id(oSlider).style[point] = -Math.ceil(oslideRange
+						+ (parseInt(s * sSingleSize) - oslideRange) * speed) + 'px';
+				if (oslideRange == [ (sSingleSize * s) ]) {
+					clearInterval(interval);
+					a = s;
+				}
+			}
+		}
+
+		function autoGlide() {
+			for ( var c = 0; c < sum; c++) {
+				oSubLi[c].className = '';
+				oTxtLi[c].className = '';
+			}
+			;
+			clearTimeout(interval);
+			if (a == (parseInt(sum) - 1)) {
+				for ( var c = 0; c < sum; c++) {
+					oSubLi[c].className = '';
+					oTxtLi[c].className = '';
+				}
+				;
+				a = 0;
+				oSubLi[a].className = "active";
+				oTxtLi[a].className = "active";
+				interval = setInterval(setValLeft(a), time);
+				timeout = setTimeout(autoGlide, delay);
+			} else {
+				a++;
+				oSubLi[a].className = "active";
+				oTxtLi[a].className = "active";
+				interval = setInterval(setValRight(a), time);
+				timeout = setTimeout(autoGlide, delay);
+			}
+		}
+
+		if (auto) {
+			timeout = setTimeout(autoGlide, delay);
+		}
+		;
+		for ( var i = 0; i < sum; i++) {
+			oSubLi[i].onmouseover = (function(i) {
+				return function() {
+					for ( var c = 0; c < sum; c++) {
+						oSubLi[c].className = '';
+						oTxtLi[c].className = '';
+					}
+					;
+					clearTimeout(timeout);
+					clearInterval(interval);
+					oSubLi[i].className = "active";
+					oTxtLi[i].className = "active";
+					if (Math.abs(parseInt($id(oSlider).style[point])) > [ (sSingleSize * i) ]) {
+						interval = setInterval(setValLeft(i), time);
+						this.onmouseout = function() {
+							if (auto) {
+								timeout = setTimeout(autoGlide, delay);
+							}
+							;
+						};
+					} else if (Math.abs(parseInt($id(oSlider).style[point])) < [ (sSingleSize * i) ]) {
+						interval = setInterval(setValRight(i), time);
+						this.onmouseout = function() {
+							if (auto) {
+								timeout = setTimeout(autoGlide, delay);
+							}
+							;
+						};
+					}
+				}
+			})(i)
+		}
+	}
+}
+
+//调用语句
+glide.layerGlide(true, //设置是否自动滚动
+		'iconBall', //对应索引按钮
+		'textBall', //标题内容文本
+		'show_pic', //焦点图片容器
+		sw, //设置滚动图片位移像素
+		3, //设置滚动时间2秒 
+		0.1, //设置过渡滚动速度
+		'left' //设置滚动方向“向左”
+);
+</script>
+	</body>
+</html>
