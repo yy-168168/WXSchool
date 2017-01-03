@@ -33,6 +33,9 @@ import com.wxschool.dao.LogDao;
 import com.wxschool.entity.ValidateCode;
 
 public class EduApiService {
+	
+	//测试账号:1543010510  619619
+	
 	private RequestConfig defaultRequestConfig = RequestConfig.custom()
 			.setSocketTimeout(20000).setConnectTimeout(20000)
 			.setConnectionRequestTimeout(20000).setStaleConnectionCheckEnabled(
