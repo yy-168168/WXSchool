@@ -32,17 +32,6 @@ public class MsgReceiveManager {
 		String replyContent = "";
 		String replyXml = "";
 
-		// 助手鲜果
-		if (receiveContent.equals("报名")) {
-			WechatService wechatService = new WechatService();
-			String token = wechatService.getAccessToken("gh_b315c2abe8ce");
-			wechatService
-					.sendCustomMsg_text(token, wxaccount, user,
-							"请按照语音提示，完成报名操作。助手君会在所有的报名者中随机抽取幸运者，送上免费的拼盘果切，敬请期待。\n\n回复【福利】查看活动详情");
-			return msm.replyVoice(user, developer,
-					"d4hpDJaomTmFvz62Fy8XMVHoaOgKxRvybpUSPwtynEA");
-		}
-
 		// 翻译功能
 		if (receiveContent.startsWith("#")) {
 			TranslateService tDao = new TranslateService();
@@ -60,12 +49,12 @@ public class MsgReceiveManager {
 		}
 
 		// 课表功能
-		if (receiveContent.indexOf("fdfsdfds") > -1) {
+		/*if (receiveContent.indexOf("fdfsdfds") > -1) {
 			CourseDao courseDao = new CourseDao();
 			replyContent = courseDao.computeReceive(wxaccount, user);
 			courseDao = null;
 			return msm.replyText(user, developer, replyContent);
-		}
+		}*/
 
 		// 搭讪功能
 		if (receiveContent.indexOf("搭讪") > -1
@@ -99,12 +88,12 @@ public class MsgReceiveManager {
 		}
 
 		// 接入多客服功能
-		if (receiveContent.equals("客服")) {
-			// WechatService wechatService = new WechatService();
-			// String token = wechatService.getAccessToken(wxaccount);
-			// wechatService.sendCustomMsg(token, user, "正在为您接入客服系统，请稍后...");
-			// return msm.replyCustomerService(user, developer);
-		}
+		/*if (receiveContent.equals("客服")) {
+			 WechatService wechatService = new WechatService();
+			 String token = wechatService.getAccessToken(wxaccount);
+			 wechatService.sendCustomMsg(token, user, "正在为您接入客服系统，请稍后...");
+			 return msm.replyCustomerService(user, developer);
+		}*/
 
 		// 快递功能
 		String com = ExpressService.getENname(receiveContent);
@@ -153,9 +142,9 @@ public class MsgReceiveManager {
 						locUrl = Config.SITEURL + locUrl;
 					}
 
-					if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
-						locUrl += user.substring(6);
-					} else {
+					//if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
+					//	locUrl += user.substring(6);
+					//} else {
 						if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本网站的网址
 							locUrl = Config.SITEURL
 									+ "/mobile/article?ac=getArticleDt";
@@ -172,7 +161,7 @@ public class MsgReceiveManager {
 						}
 
 						locUrl += "&aId=" + article.getArticleId()+"&t=";
-					}
+					//}
 
 					ns.setUrl(locUrl);
 					ns.setTitle(article.getTitle());
@@ -601,9 +590,9 @@ public class MsgReceiveManager {
 						locUrl = Config.SITEURL + locUrl;
 					}
 
-					if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
-						locUrl += user.substring(6);
-					} else {
+					//if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
+					//	locUrl += user.substring(6);
+					//} else {
 						if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本站网址
 							locUrl = Config.SITEURL
 									+ "/mobile/article?ac=getArticleDt";
@@ -620,7 +609,7 @@ public class MsgReceiveManager {
 						}
 
 						locUrl += "&aId=" + article.getArticleId()+"&t=";
-					}
+					//}
 
 					ns = new News();
 					ns.setUrl(locUrl);

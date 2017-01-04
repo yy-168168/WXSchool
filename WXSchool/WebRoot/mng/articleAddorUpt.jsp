@@ -89,8 +89,7 @@ function check() {
 	var cate = document.getElementsByName("cate")[0].value;
 	var rank = document.getElementsByName("rank")[0].value;
 
-	if ($.trim(keyword) == "" || $.trim(title) == "" || $.trim(picUrl) == ""
-			|| $.trim(locUrl) == "" || $.trim(rank) == "") {
+	if ($.trim(keyword) == "" || $.trim(title) == "" || $.trim(locUrl) == "" || $.trim(rank) == "") {
 		showNotice("不能为空！");
 		return false;
 	}
@@ -100,8 +99,8 @@ function check() {
 		return false;
 	}
 
-	if (keyword.length > 50 || title.length > 100 || picUrl.length > 200
-			|| locUrl.length > 200) {
+	if (keyword.length > 50 || title.length > 100 || picUrl.length > 500
+			|| locUrl.length > 500) {
 		showNotice("数据过长！");
 		return false;
 	}
@@ -179,7 +178,7 @@ function check() {
 							<tr>
 								<td class="form_title">
 									图片外链地址
-									<span class="myrequired">*</span>
+									<!-- <span class="myrequired">*</span> -->
 								</td>
 								<td>
 									<input type="text" name="picUrl" value="<%=picUrl%>"

@@ -25,7 +25,7 @@ public class ArticleServlet extends HttpServlet {
 		response.setContentType("text/html");
 
 		String ac = request.getParameter("ac");
-		String userwx = request.getParameter("userwx");
+		//String userwx = request.getParameter("userwx");
 		String wxaccount = request.getParameter("wxaccount");
 		ArticleDao aDao = new ArticleDao();
 
@@ -81,10 +81,10 @@ public class ArticleServlet extends HttpServlet {
 			if (locUrl == null) {
 				BackJs.backJs("<script>alert('该链接已失效');</script>", response);
 			} else {
-				if (locUrl.indexOf("jwc.hrbnu.edu.cn") > -1) {// 哈师大教务平台
+				/*if (locUrl.indexOf("jwc.hrbnu.edu.cn") > -1) {// 哈师大教务平台
 					locUrl += userwx.substring(6);
 					// response.sendRedirect("/common/error_notFound.html");
-				}
+				}*/
 				response.sendRedirect(locUrl);
 			}
 		}
