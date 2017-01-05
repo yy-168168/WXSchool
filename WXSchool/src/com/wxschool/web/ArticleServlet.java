@@ -76,7 +76,7 @@ public class ArticleServlet extends HttpServlet {
 			aDao.updateVisitPerson(aId);
 
 			Article article = aDao.getArticleById(aId);
-			
+
 			if (article.getStatus() != 1) {
 				BackJs.backJs("<script>alert('该链接已失效');</script>", response);
 			} else {
