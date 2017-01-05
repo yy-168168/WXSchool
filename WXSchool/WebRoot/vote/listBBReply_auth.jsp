@@ -96,7 +96,9 @@ function showPubForm(r) {
 	}
 }
 
+var isBusy = false;
 function check() {
+	if(isBusy){return false;}
 	var content = document.getElementsByName("content")[0].value;
 	// var receiver = document.getElementsByName("receiver")[0].value;
 	var isTrueName = document.getElementsByName("isTrueName")[0].checked;
@@ -114,8 +116,8 @@ function check() {
 		return false;
 	}
 	
-	$("#submit").addClass('weui_btn_disabled');
-	
+	//$("#submit").addClass('weui_btn_disabled');
+	isBusy = true;
 	var url = "mobile/love?ac=addBReply&wxaccount=<%=wxaccount%>&userwx=<%=userwx%>";
 	$.post(url, {
 			voteId : '<%=voteId%>',
@@ -129,7 +131,8 @@ function check() {
 				window.location.reload();
 			} else {
 				showNotice("发送失败，请重试");
-				$("#submit").removeClass('weui_btn_disabled');
+				//$("#submit").removeClass('weui_btn_disabled');
+				isBusy = false;
 			}
 		});
 	}
