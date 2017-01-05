@@ -96,7 +96,7 @@ public class CoreServlet extends HttpServlet {
 		} catch (Exception e) {
 			LogDao.getLog().addExpLog(e, "返回消息出错");
 		}
-
+		
 		out.print(resultStr);
 		out.flush();
 		out.close();

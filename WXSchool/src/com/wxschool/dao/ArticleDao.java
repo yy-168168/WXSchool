@@ -326,7 +326,7 @@ public class ArticleDao {
 	}
 
 	public Article getArticleById(String articleId) {
-		String sql = "SELECT `keyword`, `title`, `picUrl`, `locUrl`, `cate`, `desc`, `sort` FROM `tb_article` WHERE `articleId` = ? and status = 1";
+		String sql = "SELECT `keyword`, `title`, `picUrl`, `locUrl`, `cate`, `desc`, `sort`, `status` FROM `tb_article` WHERE `articleId` = ? ";
 		Object[] o = { articleId };
 		Article article = new Article();
 		try {
@@ -341,6 +341,7 @@ public class ArticleDao {
 				article.setCate(os[i][4].toString());
 				article.setDesc(os[i][5].toString());
 				article.setRank(Integer.parseInt(os[i][6].toString()));
+				article.setStatus(Integer.parseInt(os[i][7].toString()));
 				article.setArticleId(Integer.parseInt(articleId));
 			}
 		} catch (Exception e) {

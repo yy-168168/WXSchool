@@ -2,6 +2,7 @@ package com.wxschool.web;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
 import com.wxschool.dao.*;
 import com.wxschool.dpo.*;
 import com.wxschool.entity.*;
@@ -49,17 +50,22 @@ public class MsgReceiveManager {
 		}
 
 		// 课表功能
-		/*if (receiveContent.indexOf("fdfsdfds") > -1) {
-			CourseDao courseDao = new CourseDao();
-			replyContent = courseDao.computeReceive(wxaccount, user);
-			courseDao = null;
-			return msm.replyText(user, developer, replyContent);
-		}*/
+		/*
+		 * if (receiveContent.indexOf("fdfsdfds") > -1) { CourseDao courseDao =
+		 * new CourseDao(); replyContent = courseDao.computeReceive(wxaccount,
+		 * user); courseDao = null; return msm.replyText(user, developer,
+		 * replyContent); }
+		 */
 
 		// 搭讪功能
 		if (receiveContent.indexOf("搭讪") > -1
 				|| receiveContent.indexOf("纸条") > -1) {
-			return chatText(wxaccount, user);
+			List<News> nsl = ChatTextDao.chatText(wxaccount, user);
+			if (nsl == null) {
+				return msm.replyText(user, developer, "当前使用人数较多，卡顿咯，请重试。");
+			} else {
+				return msm.replyNewsList(user, developer, nsl);
+			}
 		}
 
 		// 拒绝对方语音消息
@@ -88,12 +94,13 @@ public class MsgReceiveManager {
 		}
 
 		// 接入多客服功能
-		/*if (receiveContent.equals("客服")) {
-			 WechatService wechatService = new WechatService();
-			 String token = wechatService.getAccessToken(wxaccount);
-			 wechatService.sendCustomMsg(token, user, "正在为您接入客服系统，请稍后...");
-			 return msm.replyCustomerService(user, developer);
-		}*/
+		/*
+		 * if (receiveContent.equals("客服")) { WechatService wechatService = new
+		 * WechatService(); String token =
+		 * wechatService.getAccessToken(wxaccount);
+		 * wechatService.sendCustomMsg(token, user, "正在为您接入客服系统，请稍后..."); return
+		 * msm.replyCustomerService(user, developer); }
+		 */
 
 		// 快递功能
 		String com = ExpressService.getENname(receiveContent);
@@ -142,26 +149,26 @@ public class MsgReceiveManager {
 						locUrl = Config.SITEURL + locUrl;
 					}
 
-					//if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
-					//	locUrl += user.substring(6);
-					//} else {
-						if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本网站的网址
-							locUrl = Config.SITEURL
-									+ "/mobile/article?ac=getArticleDt";
-						}
+					// if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
+					// locUrl += user.substring(6);
+					// } else {
+					if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本网站的网址
+						locUrl = Config.SITEURL
+								+ "/mobile/article?ac=getArticleDt";
+					}
 
-						locUrl += locUrl.indexOf("?") > -1 ? "&" : "?";
+					locUrl += locUrl.indexOf("?") > -1 ? "&" : "?";
 
-						if (locUrl.indexOf("wxaccount") < 0) {
-							locUrl += "wxaccount=" + wxaccount;
-						}
+					if (locUrl.indexOf("wxaccount") < 0) {
+						locUrl += "wxaccount=" + wxaccount;
+					}
 
-						if (locUrl.indexOf("userwx") < 0) {
-							locUrl += "&userwx=" + user;
-						}
+					if (locUrl.indexOf("userwx") < 0) {
+						locUrl += "&userwx=" + user;
+					}
 
-						locUrl += "&aId=" + article.getArticleId()+"&t=";
-					//}
+					locUrl += "&aId=" + article.getArticleId() + "&t=";
+					// }
 
 					ns.setUrl(locUrl);
 					ns.setTitle(article.getTitle());
@@ -201,7 +208,7 @@ public class MsgReceiveManager {
 						ns.setTitle(pic.getTitle());
 						String locUrl = Config.SITEURL
 								+ "/mobile/pic?ac=getPic&wxaccount="
-								+ wxaccount + "&picId=" + picId+"&t=";
+								+ wxaccount + "&picId=" + picId + "&t=";
 						ns.setUrl(locUrl);
 						ns.setPicUrl("");
 						ns.setDescription(pic.getDesc());
@@ -324,7 +331,7 @@ public class MsgReceiveManager {
 				String locUrl = Config.SITEURL
 						+ "/mobile/pic?ac=uploadImgClient&wxaccount="
 						+ developer + "&userwx=" + user + "&picUrl="
-						+ vote.getContent()+"&t=";
+						+ vote.getContent() + "&t=";
 				news.setUrl(locUrl);
 				return msm.replyNews(user, developer, news);
 			} else {
@@ -572,7 +579,12 @@ public class MsgReceiveManager {
 
 			// 聊天
 			if (eventKey.equals("key_hi")) {
-				return chatText(wxaccount, user);
+				List<News> nsl = ChatTextDao.chatText(wxaccount, user);
+				if (nsl == null) {
+					return msm.replyText(user, developer, "当前使用人数较多，卡顿咯，请重试。");
+				} else {
+					return msm.replyNewsList(user, developer, nsl);
+				}
 			}
 
 			// 图文回复处理
@@ -590,26 +602,26 @@ public class MsgReceiveManager {
 						locUrl = Config.SITEURL + locUrl;
 					}
 
-					//if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
-					//	locUrl += user.substring(6);
-					//} else {
-						if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本站网址
-							locUrl = Config.SITEURL
-									+ "/mobile/article?ac=getArticleDt";
-						}
+					// if (locUrl.indexOf("jwc.hrbnu.edu.cn") >= 0) {// 哈师大教务平台
+					// locUrl += user.substring(6);
+					// } else {
+					if (locUrl.indexOf(Config.SITEURL) < 0) {// 非本站网址
+						locUrl = Config.SITEURL
+								+ "/mobile/article?ac=getArticleDt";
+					}
 
-						locUrl += locUrl.indexOf("?") > -1 ? "&" : "?";
+					locUrl += locUrl.indexOf("?") > -1 ? "&" : "?";
 
-						if (locUrl.indexOf("wxaccount") < 0) {
-							locUrl += "wxaccount=" + wxaccount;
-						}
+					if (locUrl.indexOf("wxaccount") < 0) {
+						locUrl += "wxaccount=" + wxaccount;
+					}
 
-						if (locUrl.indexOf("userwx") < 0) {
-							locUrl += "&userwx=" + user;
-						}
+					if (locUrl.indexOf("userwx") < 0) {
+						locUrl += "&userwx=" + user;
+					}
 
-						locUrl += "&aId=" + article.getArticleId()+"&t=";
-					//}
+					locUrl += "&aId=" + article.getArticleId() + "&t=";
+					// }
 
 					ns = new News();
 					ns.setUrl(locUrl);
@@ -644,7 +656,7 @@ public class MsgReceiveManager {
 					ns.setTitle(pic.getTitle());
 					String locUrl = Config.SITEURL
 							+ "/mobile/pic?ac=getPic&wxaccount=" + wxaccount
-							+ "&picId=" + picId+"&t=";
+							+ "&picId=" + picId + "&t=";
 					ns.setUrl(locUrl);
 					ns.setPicUrl("");
 					ns.setDescription(pic.getDesc());
@@ -735,10 +747,10 @@ public class MsgReceiveManager {
 					}
 				} else {
 					WxUser user = new WxUser();
-					user.setLastUsedTime(String.format("%tF %<tT", new Date()
-							.getTime()));
-					user.setSubscribeTime(String.format("%tF %<tT", new Date()
-							.getTime()));
+					user.setLastUsedTime(String.format("%tF %<tT",
+							new Date().getTime()));
+					user.setSubscribeTime(String.format("%tF %<tT",
+							new Date().getTime()));
 					user.setUserwx(userwx);
 					user.setWxaccount(wxaccount);
 					wxUserDao.addUser(user);
@@ -754,117 +766,6 @@ public class MsgReceiveManager {
 		// 记录操作
 		OperateRecordDao operateRecordDao = new OperateRecordDao();
 		operateRecordDao.addRecord(record);
-	}
-
-	// 文字聊天
-	private String chatText(String wxaccount, String userwx) throws Exception {
-		AccountDao accountDao = new AccountDao();
-		String chat = accountDao.getContent(wxaccount, "textChat");
-		accountDao = null;
-
-		if (chat.equals("") || Integer.parseInt(chat) > 0) {
-			WxUserDao wxUserDao = new WxUserDao();
-			WxUser wxUser = wxUserDao.getUser_simple(wxaccount, userwx);
-
-			if (wxUser == null || wxUser.getUserId() == 0) {
-				wxUserDao = null;
-				return msm.replyText(userwx, wxaccount, "亲，请再试一次");
-			} else {
-				int sex = wxUser.getSex();
-				sex = sex == 0 ? 0 : sex == 1 ? 2 : 1;
-
-				List<ChatRecord> users = wxUserDao.getChatUsers(wxaccount, sex,
-						Config.WECHATCUSTOMMSGVALIDTIME, 0, 9);
-				/*
-				 * if (users == null) { users =
-				 * wxUserDao.getChatUsers(wxaccount, sex,
-				 * Config.WECHATCUSTOMMSGVALIDTIME, 0, 9); } else {
-				 * List<ChatRecord> level0Users = wxUserDao.getChatUsers(
-				 * wxaccount, sex, Config.WECHATCUSTOMMSGVALIDTIME, 0, 9 -
-				 * users.size()); users.addAll(level0Users); }
-				 */
-
-				if (users == null || users.size() == 0) {
-					users = null;
-					return msm.replyText(userwx, wxaccount, "亲，请再试一次");
-				} else {
-					int countOFOnline = wxUserDao
-							.getTotalRecordOfLastUsedUsers(wxaccount, 48);
-					wxUserDao = null;
-
-					List<News> nsl = new ArrayList<News>();
-					News ns = new News();
-					ns.setTitle("随机搭讪--总有新奇在身边！当前有" + countOFOnline
-							+ "人在线！(点此设置相关信息及查看所有记录)");
-					ns.setPicUrl("");
-					ns.setUrl(Config.SITEURL
-							+ "/mobile/chat/text?ac=wxInfo&wxaccount="
-							+ wxaccount + "&userwx=" + userwx+"&t=");
-					nsl.add(ns);
-
-					String[] userwxs = new String[users.size()];// userwx数组
-
-					for (int i = 0; i < users.size(); i++) {
-						ns = new News();
-
-						ChatRecord record = users.get(i);
-						WxUser wxUser2 = record.getWxUser();
-						Student stu = record.getStudent();
-
-						StringBuffer title = new StringBuffer(wxUser2
-								.getNickname());
-						if (wxUser2.getSex() == 1) {
-							title.append("汉纸");
-						} else if (wxUser2.getSex() == 2) {
-							title.append("妹纸");
-						}
-
-						if (!stu.getDepart().equals("")) {
-							title.append("--");
-							title.append(stu.getGrade());
-							title.append("级");
-							title.append(stu.getDepart());
-							title.append(stu.getMajor());
-							title.append("专业");
-						}
-						ns.setTitle(title.toString());
-
-						String headImgUrl = wxUser2.getHeadImgUrl();
-						if (i == 0) {
-							ns.setPicUrl(headImgUrl);
-						} else {
-							int img_i = headImgUrl.lastIndexOf("/");
-							if (img_i > -1) {
-								ns.setPicUrl(headImgUrl.substring(0, img_i)
-										+ "/96");
-							} else {
-								ns.setPicUrl(headImgUrl);
-							}
-						}
-
-						ns.setUrl(Config.SITEURL
-								+ "/mobile/chat/text?ac=chat&wxaccount="
-								+ wxaccount + "&userwx=" + userwx + "&to="
-								+ UUID.randomUUID().toString()
-								+ wxUser2.getUserId()+"&t=");
-						nsl.add(ns);
-
-						userwxs[i] = wxUser2.getUserwx();
-					}
-					users = null;
-
-					// 启动更新用户微信信息的线程
-					UpdateUserInfoThread uuit = new UpdateUserInfoThread(
-							wxaccount, userwxs);
-					Thread t = new Thread(uuit);
-					t.start();
-
-					return msm.replyNewsList(userwx, wxaccount, nsl);
-				}
-			}
-		} else {
-			return msm.replyText(userwx, wxaccount, "功能升级中...");
-		}
 	}
 
 	/**
@@ -919,32 +820,6 @@ public class MsgReceiveManager {
 										"你收到一条来自"
 												+ wxUser.getNickname()
 												+ "的语音消息\n\n如想搭讪TA，请继续回复语音\n如若嫌弃，请回复文字:你走开");
-
-						// 四位神秘用户
-						/*
-						 * if (to.equals("owRT7jtwCxFFIHXm0F_Hc7fa9_go") ||
-						 * to.equals("owRT7jnIJiBixRx_AayTXOCtfcMg") ||
-						 * to.equals("owRT7jtOkhOHi045tgn2l6RzGd3U") ||
-						 * to.equals("owRT7jjuueL2nw6ZW6BLhs4GPCTs")) {
-						 * 
-						 * WxUser sUser = wxUserDao.getUser_simple(wxaccount,
-						 * to); if (sUser != null && sUser.getUserId() != 0) {
-						 * // 获奖凭证 List<News> newsList = new ArrayList<News>();
-						 * // 第一条 News news = new News();
-						 * news.setTitle("恭喜你邂逅四位神秘人之一，获得彩蛋");
-						 * news.setPicUrl(sUser.getHeadImgUrl());
-						 * newsList.add(news); // 第二条 String anhao = CommonUtil
-						 * .getRandomChineseCharacter(2); news = new
-						 * News("点击进入扫码添加微信，领奖暗号是：" + anhao);
-						 * news.setUrl(Config.SITEURL +
-						 * "/mobile/pic?ac=getPic&wxaccount=" + wxaccount +
-						 * "&picId=108"); newsList.add(news);
-						 * wechatService.sendCustomMsg_newsList(token,
-						 * wxaccount, from, newsList); // 管理员凭证
-						 * wechatService.sendCustomMsg_text(token, wxaccount,
-						 * "owRT7jtwCxFFIHXm0F_Hc7fa9_go", wxUser .getNickname()
-						 * + "的领奖暗号是：" + anhao); } }
-						 */
 					}
 				} else if (result.equals("refuse")) {
 					replyContent = "语音消息被对方拒收，请重新回复";

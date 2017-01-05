@@ -2,18 +2,132 @@ package com.wxschool.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.jsp.jstl.sql.Result;
 
+import com.wxschool.dpo.UpdateUserInfoThread;
 import com.wxschool.entity.ChatRecord;
 import com.wxschool.entity.Config;
+import com.wxschool.entity.News;
 import com.wxschool.entity.Page;
+import com.wxschool.entity.Student;
 import com.wxschool.entity.WxUser;
 import com.wxschool.util.CommonUtil;
 
 public class ChatTextDao {
 
 	private ConnDBI connDB = DBManager.getConnDb();
+
+	public static List<News> chatText(String wxaccount, String userwx) {
+		AccountDao accountDao = new AccountDao();
+		String chat = accountDao.getContent(wxaccount, "textChat");
+		accountDao = null;
+
+		if (chat.equals("") || Integer.parseInt(chat) > 0) {
+			WxUserDao wxUserDao = new WxUserDao();
+			WxUser wxUser = wxUserDao.getUser_simple(wxaccount, userwx);
+
+			if (wxUser == null || wxUser.getUserId() == 0) {
+				wxUserDao = null;
+				return null;
+			} else {
+				int sex = wxUser.getSex();
+				sex = sex == 0 ? 0 : sex == 1 ? 2 : 1;
+
+				List<ChatRecord> users = wxUserDao.getChatUsers(wxaccount, sex,
+						Config.WECHATCUSTOMMSGVALIDTIME, 0, 8);
+				/*
+				 * if (users == null) { users =
+				 * wxUserDao.getChatUsers(wxaccount, sex,
+				 * Config.WECHATCUSTOMMSGVALIDTIME, 0, 9); } else {
+				 * List<ChatRecord> level0Users = wxUserDao.getChatUsers(
+				 * wxaccount, sex, Config.WECHATCUSTOMMSGVALIDTIME, 0, 9 -
+				 * users.size()); users.addAll(level0Users); }
+				 */
+
+				if (users == null || users.size() == 0) {
+					users = null;
+					return null;
+				} else {
+					int countOFOnline = wxUserDao
+							.getTotalRecordOfLastUsedUsers(wxaccount, 48);
+					wxUserDao = null;
+
+					List<News> nsl = new ArrayList<News>();
+					News ns = new News();
+					ns.setTitle("随机搭讪--总有新奇在身边！当前有" + countOFOnline
+							+ "人在线！(点此设置相关信息及查看所有记录)");
+					ns.setPicUrl("");
+					ns.setUrl(Config.SITEURL
+							+ "/mobile/chat/text?ac=wxInfo&wxaccount="
+							+ wxaccount + "&userwx=" + userwx + "&t=");
+					nsl.add(ns);
+
+					String[] userwxs = new String[users.size()];// userwx数组
+
+					for (int i = 0; i < users.size(); i++) {
+						ns = new News();
+
+						ChatRecord record = users.get(i);
+						WxUser wxUser2 = record.getWxUser();
+						Student stu = record.getStudent();
+
+						StringBuffer title = new StringBuffer(
+								wxUser2.getNickname());
+						if (wxUser2.getSex() == 1) {
+							title.append("汉纸");
+						} else if (wxUser2.getSex() == 2) {
+							title.append("妹纸");
+						}
+
+						if (!stu.getDepart().equals("")) {
+							title.append("--");
+							title.append(stu.getGrade());
+							title.append("级");
+							title.append(stu.getDepart());
+							title.append(stu.getMajor());
+							title.append("专业");
+						}
+						ns.setTitle(title.toString());
+
+						String headImgUrl = wxUser2.getHeadImgUrl();
+						if (i == 0) {
+							ns.setPicUrl(headImgUrl);
+						} else {
+							int img_i = headImgUrl.lastIndexOf("/");
+							if (img_i > -1) {
+								ns.setPicUrl(headImgUrl.substring(0, img_i)
+										+ "/96");
+							} else {
+								ns.setPicUrl(headImgUrl);
+							}
+						}
+
+						ns.setUrl(Config.SITEURL
+								+ "/mobile/chat/text?ac=chat&wxaccount="
+								+ wxaccount + "&userwx=" + userwx + "&to="
+								+ UUID.randomUUID().toString()
+								+ wxUser2.getUserId() + "&t=");
+						nsl.add(ns);
+
+						userwxs[i] = wxUser2.getUserwx();
+					}
+					users = null;
+					
+					// 启动更新用户微信信息的线程
+					UpdateUserInfoThread uuit = new UpdateUserInfoThread(
+							wxaccount, userwxs);
+					Thread t = new Thread(uuit);
+					t.start();
+					
+					return nsl;
+				}
+			}
+		} else {
+			return null;
+		}
+	}
 
 	public List<ChatRecord> getChatList(String wxaccount, String userwx,
 			Page page) {

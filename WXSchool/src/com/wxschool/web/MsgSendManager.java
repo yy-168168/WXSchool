@@ -147,16 +147,10 @@ public class MsgSendManager {
 
 	// 多图文
 	public String replyNewsList(String user, String developer, List<News> nsList) {
-		String replyXML1 = "<xml><ToUserName><![CDATA[%1$s]]></ToUserName>"
-				+ "<FromUserName><![CDATA[%2$s]]></FromUserName>"
-				+ "<CreateTime>%3$s</CreateTime>"
-				+ "<MsgType><![CDATA[news]]></MsgType>";
+		String replyXML1 = "<xml><ToUserName><![CDATA[%1$s]]></ToUserName><FromUserName><![CDATA[%2$s]]></FromUserName><CreateTime>%3$s</CreateTime><MsgType><![CDATA[news]]></MsgType>";
 		String replyXML2 = "<ArticleCount>%1$s</ArticleCount><Articles>";
-		String replyXML3 = "<item><Title><![CDATA[%1$s]]></Title>"
-				+ "<Description><![CDATA[%2$s]]></Description>"
-				+ "<PicUrl><![CDATA[%3$s]]></PicUrl>"
-				+ "<Url><![CDATA[%4$s]]></Url></item>";
-		String replyXML4 = "</Articles><FuncFlag>1</FuncFlag></xml>";
+		String replyXML3 = "<item><Title><![CDATA[%1$s]]></Title><Description><![CDATA[%2$s]]></Description><PicUrl><![CDATA[%3$s]]></PicUrl><Url><![CDATA[%4$s]]></Url></item>";
+		String replyXML4 = "</Articles></xml>";
 		StringBuffer sb = new StringBuffer();
 
 		String replyStr = String.format(replyXML1, user, developer,
@@ -174,9 +168,8 @@ public class MsgSendManager {
 		}
 
 		sb.append(replyXML4);
-		String reply = sb.toString();
-		sb = null;
-		return reply;
+		
+		return sb.toString();
 	}
 
 	/**
