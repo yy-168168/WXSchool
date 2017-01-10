@@ -89,8 +89,8 @@ public class HttpUtils {
 		} finally {
 			method.releaseConnection();
 		}
-		System.out.println(response.toString());
-		System.out.println("请求完毕");
+		//System.out.println(response.toString());
+		//System.out.println("请求完毕");
 		return response.toString();
 	}
 
@@ -104,7 +104,7 @@ public class HttpUtils {
 	 * @throws UnsupportedEncodingException
 	 * @throws IOException
 	 */
-	public String httpStreamRequest(String requestUrl, String requestMethod,
+	public static String httpStreamRequest(String requestUrl, String requestMethod,
 			String outputStr) throws UnsupportedEncodingException, IOException {
 
 		URL url = new URL(requestUrl);

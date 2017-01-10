@@ -1,7 +1,11 @@
 package com.wxschool.dao;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.jsp.jstl.sql.Result;
@@ -14,8 +18,30 @@ import com.wxschool.entity.Page;
 import com.wxschool.entity.Student;
 import com.wxschool.entity.WxUser;
 import com.wxschool.util.CommonUtil;
+import com.wxschool.util.HttpUtils;
 
 public class ChatTextDao {
+
+	public static void main(String[] args) {
+		String url = "http://dwz.cn/create.php";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("url",
+				"http://www.jingl520.com/fsdljfs?fjdsj=fdfd&dfds=fdsfd");
+		try {
+			String s = HttpUtils.doPost(url, params, "utf-8");
+			System.out.println(s);
+			s = HttpUtils
+					.httpStreamRequest("http://dwz.cn/create.php", "POST",
+							"{\"url\":\"http://www.jingl520.com/fsdljfs?fjdsj=fdfd&dfds=fdsfd\"}");
+			System.out.println(s);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private ConnDBI connDB = DBManager.getConnDb();
 
@@ -114,13 +140,13 @@ public class ChatTextDao {
 						userwxs[i] = wxUser2.getUserwx();
 					}
 					users = null;
-					
+
 					// 启动更新用户微信信息的线程
 					UpdateUserInfoThread uuit = new UpdateUserInfoThread(
 							wxaccount, userwxs);
 					Thread t = new Thread(uuit);
 					t.start();
-					
+
 					return nsl;
 				}
 			}

@@ -50,12 +50,12 @@ public class MsgReceiveManager {
 		}
 
 		// 课表功能
-		/*
-		 * if (receiveContent.indexOf("fdfsdfds") > -1) { CourseDao courseDao =
-		 * new CourseDao(); replyContent = courseDao.computeReceive(wxaccount,
-		 * user); courseDao = null; return msm.replyText(user, developer,
-		 * replyContent); }
-		 */
+		/*if (receiveContent.indexOf("fdfsdfds") > -1) {
+			CourseDao courseDao = new CourseDao();
+			replyContent = courseDao.computeReceive(wxaccount, user);
+			courseDao = null;
+			return msm.replyText(user, developer, replyContent);
+		}*/
 
 		// 搭讪功能
 		if (receiveContent.indexOf("搭讪") > -1
