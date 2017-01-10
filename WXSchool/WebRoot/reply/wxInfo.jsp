@@ -159,7 +159,7 @@ document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 			<div class="oneFun" id="beSearch">
 				<table width="100%" border="0">
 					<tr>
-						<td><span>是否被搜索到</span></td>
+						<td><span>接收搭讪消息</span></td>
 						<td align="right" width='80px' onclick="beSearch(this)" class="<%=cn%>">
 							<input id="input1" type="button" value=""><input id="input2" type="button" value="">
 						</td>

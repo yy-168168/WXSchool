@@ -117,7 +117,8 @@ document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 			path: 'static_/qqface/'	//表情存放的路径
 		});
 		
-		setTimeout("setInterval('getCurChatRecords()', 3000)", 5000); //进入页面5秒后，每3秒刷新页面
+		setInterval('getCurChatRecords()', 5000); //每5秒刷新页面
+		//setTimeout("setInterval('getCurChatRecords()', 5000)", 5000); //进入页面5秒后，每5秒刷新页面
 	});
 	
 	function getMinDiff(preTime, curTime){
