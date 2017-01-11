@@ -26,6 +26,7 @@ public class Config {
 	// JS-SDK
 	public static String jsapiTicket = "";
 
-	//
+	//微信配置
 	public static int WECHATCUSTOMMSGVALIDTIME = 47;
+	public static int WECHATCUSTOMMSGARTNUMS = 8;
 }

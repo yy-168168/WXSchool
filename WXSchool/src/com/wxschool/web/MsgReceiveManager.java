@@ -50,12 +50,12 @@ public class MsgReceiveManager {
 		}
 
 		// 课表功能
-		/*if (receiveContent.indexOf("fdfsdfds") > -1) {
-			CourseDao courseDao = new CourseDao();
-			replyContent = courseDao.computeReceive(wxaccount, user);
-			courseDao = null;
-			return msm.replyText(user, developer, replyContent);
-		}*/
+		/*
+		 * if (receiveContent.indexOf("fdfsdfds") > -1) { CourseDao courseDao =
+		 * new CourseDao(); replyContent = courseDao.computeReceive(wxaccount,
+		 * user); courseDao = null; return msm.replyText(user, developer,
+		 * replyContent); }
+		 */
 
 		// 搭讪功能
 		if (receiveContent.indexOf("搭讪") > -1
@@ -180,7 +180,7 @@ public class MsgReceiveManager {
 				}
 
 				articles = null;
-				if (nsl.size() > 9) {
+				if (nsl.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
 					replyXml = msm.replyNewsList(user, developer, nsl);
 					nsl = null;
 					return replyXml;
@@ -193,10 +193,6 @@ public class MsgReceiveManager {
 		List<Pic> pics = picDao.getPics(wxaccount);
 		if (pics != null && pics.size() > 0) {
 			for (int i = 0, len1 = pics.size(); i < len1; i++) {
-				if (nsl.size() > 9) {
-					break;
-				}
-
 				Pic pic = pics.get(i);
 				String[] key = pic.getKeyword().split("\\|");
 				for (int j = 0, len2 = key.length; j < len2; j++) {
@@ -219,15 +215,15 @@ public class MsgReceiveManager {
 				}
 				key = null;
 				pic = null;
+
+				if (nsl.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
+					replyXml = msm.replyNewsList(user, developer, nsl);
+					nsl = null;
+					return replyXml;
+				}
 			}
 			pics = null;
 			picDao = null;
-
-			if (nsl.size() > 9) {
-				replyXml = msm.replyNewsList(user, developer, nsl);
-				nsl = null;
-				return replyXml;
-			}
 		}
 
 		// 文本自定义回复
@@ -237,10 +233,6 @@ public class MsgReceiveManager {
 		if (texts != null && texts.size() > 0) {
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0, len1 = texts.size(); i < len1; i++) {
-				if (nsl.size() > 9) {
-					break;
-				}
-
 				Text text = texts.get(i);
 				String[] key = text.getKey().split("\\|");
 				for (int j = 0, len2 = key.length; j < len2; j++) {
@@ -248,11 +240,7 @@ public class MsgReceiveManager {
 							|| (!isNum && receiveContent.indexOf(key[j]) >= 0)) {
 						String val = text.getValue();
 
-						News ns = new News();
-						ns.setTitle(val);
-						ns.setUrl("");
-						ns.setDescription("");
-						ns.setPicUrl("");
+						News ns = new News(val);
 						nsl.add(ns);
 
 						if (sb.length() > 0) {
@@ -264,6 +252,9 @@ public class MsgReceiveManager {
 				}
 				key = null;
 				text = null;
+				if (nsl.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
+					break;
+				}
 			}
 			texts = null;
 			textDao = null;
@@ -382,20 +373,20 @@ public class MsgReceiveManager {
 			if (lastRecordFromOther.getMsgId() == 0
 					|| !lastRecordFromOther.getWxUser().isOnline()
 					|| lastRecordFromOther.getStatus() == 2) {
-				replyContent = chatVoice(token, developer, user, null, mediaId,
-						format, true);
+				replyContent = ChatVoiceDao.chatVoice(token, developer, user,
+						null, mediaId, format, true);
 			} else {// 继续回复
 				List<ChatRecord> recordsFromMy = chatDao.getChatRecords(
 						developer, user, lastRecordFromOther.getFrom(),
 						new Page(1, 10, 10), true);
 				if (recordsFromMy != null) {
 					if (recordsFromMy.size() == 0) {// 没有回复过
-						replyContent = chatVoice(token, developer, user,
-								lastRecordFromOther.getFrom(), mediaId, format,
-								true);
+						replyContent = ChatVoiceDao.chatVoice(token, developer,
+								user, lastRecordFromOther.getFrom(), mediaId,
+								format, true);
 					} else if (recordsFromMy.get(0).getStatus() == 2) {// 我发出的最后一条语音消息被拒绝，将随机发送
-						replyContent = chatVoice(token, developer, user, null,
-								mediaId, format, true);
+						replyContent = ChatVoiceDao.chatVoice(token, developer,
+								user, null, mediaId, format, true);
 					} else {
 						boolean isNeedNotice = false;
 						// 消息超过6小时
@@ -405,9 +396,9 @@ public class MsgReceiveManager {
 						if (diff_s / (60 * 60) >= 6) {
 							isNeedNotice = true;
 						}
-						replyContent = chatVoice(token, developer, user,
-								lastRecordFromOther.getFrom(), mediaId, format,
-								isNeedNotice);
+						replyContent = ChatVoiceDao.chatVoice(token, developer,
+								user, lastRecordFromOther.getFrom(), mediaId,
+								format, isNeedNotice);
 					}
 				}
 			}
@@ -632,7 +623,7 @@ public class MsgReceiveManager {
 					nsList.add(ns);
 					article = null;
 
-					if (nsList.size() >= 10) {
+					if (nsList.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
 						replyXml = msm.replyNewsList(user, developer, nsList);
 						nsList = null;
 						return replyXml;
@@ -664,7 +655,7 @@ public class MsgReceiveManager {
 					nsList.add(ns);
 					pic = null;
 
-					if (nsList.size() >= 10) {
+					if (nsList.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
 						replyXml = msm.replyNewsList(user, developer, nsList);
 						nsList = null;
 						return replyXml;
@@ -692,14 +683,10 @@ public class MsgReceiveManager {
 								sb.append("\n\n");
 							}
 						} else {
-							ns = new News();
-							ns.setTitle(val);
-							ns.setDescription("");
-							ns.setPicUrl("");
-							ns.setUrl("");
+							ns = new News(val);
 							nsList.add(ns);
 
-							if (nsList.size() >= 10) {
+							if (nsList.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
 								break;
 							}
 						}
@@ -768,90 +755,4 @@ public class MsgReceiveManager {
 		operateRecordDao.addRecord(record);
 	}
 
-	/**
-	 * 
-	 * @param token
-	 * @param wxaccount
-	 * @param userwx
-	 * @return
-	 */
-	private String chatVoice(String token, String wxaccount, String from,
-			String to, String mediaId, String format, boolean isNeedNotice)
-			throws Exception {
-		String replyContent = "语音发送失败，请重试/::)";
-
-		WxUserDao wxUserDao = new WxUserDao();
-		WxUser wxUser = wxUserDao.getUser_simple(wxaccount, from);
-		if (wxUser == null || wxUser.getUserId() == 0) {
-			return replyContent;
-		}
-
-		// 获取随机聊天人的openId
-		if (to == null) {
-			int sex = wxUser.getSex();
-			sex = sex == 0 ? 0 : sex == 1 ? 2 : 1;
-
-			List<ChatRecord> users = wxUserDao.getChatUsers(wxaccount, sex,
-					Config.WECHATCUSTOMMSGVALIDTIME, 0, 1);
-			if (users == null || users.size() == 0) {
-			} else {
-				to = users.get(0).getWxUser().getUserwx();
-			}
-			users = null;
-		}
-
-		if (to != null) {
-			WechatService wechatService = new WechatService();
-			// 发送语音客服消息
-			if (token != null) {
-				String result = wechatService.sendCustomMsg_voice(token,
-						wxaccount, to, mediaId);
-
-				if (result.equals("ok")) {
-					replyContent = "success";
-
-					// 发送提示客服消息(随机，或者超过6小时)
-					if (isNeedNotice) {
-						wechatService
-								.sendCustomMsg_text(
-										token,
-										wxaccount,
-										to,
-										"你收到一条来自"
-												+ wxUser.getNickname()
-												+ "的语音消息\n\n如想搭讪TA，请继续回复语音\n如若嫌弃，请回复文字:你走开");
-					}
-				} else if (result.equals("refuse")) {
-					replyContent = "语音消息被对方拒收，请重新回复";
-				}
-			}
-
-			// 下载语音，存储语音资源，保存记录到数据库
-			if (token != null) {
-				byte[] b = wechatService.downloadMedia(token, mediaId);
-				String fileUrl = "";
-				if (b != null) {
-					BosService bosService = new BosService();
-					fileUrl = bosService.addFile(b, format);
-					fileUrl = fileUrl == null ? "" : fileUrl;
-					bosService = null;
-				}
-
-				ChatRecord record = new ChatRecord();
-				record.setContent(fileUrl);
-				record.setFrom(from);
-				record.setTo(to);
-				record.setWxaccount(wxaccount);
-				record.setMediaId(mediaId);
-
-				ChatVoiceDao chatDao = new ChatVoiceDao();
-				chatDao.addRecord(record);
-				chatDao = null;
-			}
-			wechatService = null;
-		}
-
-		wxUserDao = null;
-		return replyContent;
-	}
 }

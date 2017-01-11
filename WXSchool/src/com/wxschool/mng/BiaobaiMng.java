@@ -88,6 +88,12 @@ public class BiaobaiMng extends HttpServlet {
 		} else if (ac.equals("deleteBb")) {
 			String voteId = request.getParameter("voteId");
 			voteDao.changeStatus(voteId, -1);
+		} else if (ac.equals("deleteReply")) {
+			String replyId = request.getParameter("replyId");
+			ReplyDao replyDao = new ReplyDao();
+			replyDao.changeStatus_reply(replyId);
+			replyDao = null;
+			return;
 		}
 		voteDao = null;
 	}

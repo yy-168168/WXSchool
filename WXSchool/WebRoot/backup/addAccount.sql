@@ -1,6 +1,6 @@
 #第一步：添加账号
-INSERT INTO `tb_account`(`wxAccount`, `wxNum`, `wxName`, `fans`, `status`, `chat`, `translate`, `weather`, `express`, `regTime`, `expireTimeOfToken`) 
-VALUES ('','','','','2','1','1','1','1', now(), now());
+INSERT INTO `tb_account`(`wxAccount`, `wxNum`, `wxName`, `fans`, `status`, `textChat`, `voiceChat`, `translate`, `weather`, `express`, `regTime`, `expireTimeOfToken`) 
+VALUES ('','','','','2','1','1','1','1','1', now(), now());
 
 #第二步：添加管理员
 INSERT INTO `tb_admin`( `wxaccount`, `userwx`, `key`, `token`,  `type`, `regTime`, `status`) 

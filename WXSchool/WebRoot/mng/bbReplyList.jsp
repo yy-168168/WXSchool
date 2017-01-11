@@ -31,7 +31,7 @@
 
 		<script type="text/javascript">
 function deleteReply(id) {
-	syncSubmit("/mngs/reply?ac=deleteReply&token=<%=token%>&replyId=" + id);
+	syncSubmit("/mngs/bb?ac=deleteReply&token=<%=token%>&replyId=" + id);
 	window.location.reload();
 }
 </script>

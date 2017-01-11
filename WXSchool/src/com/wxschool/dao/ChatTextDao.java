@@ -62,7 +62,8 @@ public class ChatTextDao {
 				sex = sex == 0 ? 0 : sex == 1 ? 2 : 1;
 
 				List<ChatRecord> users = wxUserDao.getChatUsers(wxaccount, sex,
-						Config.WECHATCUSTOMMSGVALIDTIME, 0, 6);
+						Config.WECHATCUSTOMMSGVALIDTIME, 0,
+						Config.WECHATCUSTOMMSGARTNUMS - 1);
 				/*
 				 * if (users == null) { users =
 				 * wxUserDao.getChatUsers(wxaccount, sex,

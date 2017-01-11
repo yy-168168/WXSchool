@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.jsp.jstl.sql.Result;
 
+import com.wxschool.dpo.BosService;
+import com.wxschool.dpo.WechatService;
 import com.wxschool.entity.ChatRecord;
 import com.wxschool.entity.Config;
 import com.wxschool.entity.Page;
@@ -12,7 +14,95 @@ import com.wxschool.entity.WxUser;
 import com.wxschool.util.CommonUtil;
 
 public class ChatVoiceDao {
+	
 	private ConnDBI connDB = DBManager.getConnDb();
+	
+	/**
+	 * 
+	 * @param token
+	 * @param wxaccount
+	 * @param userwx
+	 * @return
+	 */
+	public static String chatVoice(String token, String wxaccount, String from,
+			String to, String mediaId, String format, boolean isNeedNotice)
+			throws Exception {
+		String replyContent = "语音发送失败，请重试/::)";
+
+		WxUserDao wxUserDao = new WxUserDao();
+		WxUser wxUser = wxUserDao.getUser_simple(wxaccount, from);
+		if (wxUser == null || wxUser.getUserId() == 0) {
+			return replyContent;
+		}
+
+		// 获取随机聊天人的openId
+		if (to == null) {
+			int sex = wxUser.getSex();
+			sex = sex == 0 ? 0 : sex == 1 ? 2 : 1;
+
+			List<ChatRecord> users = wxUserDao.getChatUsers(wxaccount, sex,
+					Config.WECHATCUSTOMMSGVALIDTIME, 0, 1);
+			if (users == null || users.size() == 0) {
+			} else {
+				to = users.get(0).getWxUser().getUserwx();
+			}
+			users = null;
+		}
+
+		if (to != null) {
+			WechatService wechatService = new WechatService();
+			// 发送语音客服消息
+			if (token != null) {
+				String result = wechatService.sendCustomMsg_voice(token,
+						wxaccount, to, mediaId);
+
+				if (result.equals("ok")) {
+					replyContent = "success";
+
+					// 发送提示客服消息(随机，或者超过6小时)
+					if (isNeedNotice) {
+						wechatService
+								.sendCustomMsg_text(
+										token,
+										wxaccount,
+										to,
+										"你收到一条来自"
+												+ wxUser.getNickname()
+												+ "的语音消息\n\n如想搭讪TA，请继续回复语音\n如若嫌弃，请回复文字:你走开");
+					}
+				} else if (result.equals("refuse")) {
+					replyContent = "语音消息被对方拒收，请重新回复";
+				}
+			}
+
+			// 下载语音，存储语音资源，保存记录到数据库
+			if (token != null) {
+				byte[] b = wechatService.downloadMedia(token, mediaId);
+				String fileUrl = "";
+				if (b != null) {
+					BosService bosService = new BosService();
+					fileUrl = bosService.addFile(b, format);
+					fileUrl = fileUrl == null ? "" : fileUrl;
+					bosService = null;
+				}
+
+				ChatRecord record = new ChatRecord();
+				record.setContent(fileUrl);
+				record.setFrom(from);
+				record.setTo(to);
+				record.setWxaccount(wxaccount);
+				record.setMediaId(mediaId);
+
+				ChatVoiceDao chatDao = new ChatVoiceDao();
+				chatDao.addRecord(record);
+				chatDao = null;
+			}
+			wechatService = null;
+		}
+
+		wxUserDao = null;
+		return replyContent;
+	}
 
 	public boolean addRecord(ChatRecord record) {
 		String sql = "INSERT INTO `tb_chat_voice`(`from`, `to`, `voiceUrl`, `wxaccount`) VALUES (?, ?, ?, ?)";
