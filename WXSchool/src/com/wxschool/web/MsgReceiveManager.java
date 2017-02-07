@@ -176,15 +176,15 @@ public class MsgReceiveManager {
 					ns.setPicUrl(article.getPicUrl());
 
 					nsl.add(ns);
-					article = null;
+
+					if (nsl.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
+						replyXml = msm.replyNewsList(user, developer, nsl);
+						nsl = null;
+						return replyXml;
+					}
 				}
 
 				articles = null;
-				if (nsl.size() >= Config.WECHATCUSTOMMSGARTNUMS) {
-					replyXml = msm.replyNewsList(user, developer, nsl);
-					nsl = null;
-					return replyXml;
-				}
 			}
 		}
 
