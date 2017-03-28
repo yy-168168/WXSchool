@@ -87,6 +87,11 @@ public class BoardServlet extends HttpServlet {
 			String contact = request.getParameter("contact");
 			String cate = request.getParameter("cate");
 
+			// 黑名单
+			if (contact.indexOf("15663867789") > -1) {
+				return;
+			}
+
 			Board board = new Board();
 			board.setContent(content);
 			board.setCate(Integer.parseInt(cate));
